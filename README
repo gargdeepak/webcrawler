@@ -1,0 +1,20 @@
+
+
+Requirements:
+1. python 3.6.7
+2. pip3
+
+
+Before you run the crawler.py script:
+1. Please make sure you have pip3 upgraded
+2. Please create a venv by the name of venv using python3 - $ python3 -m venv venv
+3. You can either explicitly use the python 3 interpreter to run the script otherwise, it will try to look for one in the venv directory
+4. Please install the dependent packages:  $pip install -r requirements.txt
+5. You are now good to go. Enjoy :)
+
+
+Improvements #todo:
+1. take user-input for:
+    a. number of results shown
+    b. # of secs to show the results
+    c. # of threads
