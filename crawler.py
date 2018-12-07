@@ -5,7 +5,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue, Empty
 from urllib.parse import urlparse
-
+import threading
 import requests
 from bs4 import BeautifulSoup
 
@@ -14,6 +14,7 @@ EMPTY_QUEUE_WAIT = 5  # 5s
 
 class WebCrawler:
     def __init__(self, url):
+        self.print_lock = threading.Lock()
         self.url = url
         cpu_count = max(multiprocessing.cpu_count(), 4)
         # minimum thread count atm is 4
@@ -28,18 +29,21 @@ class WebCrawler:
         try:
             response = requests.get(url, timeout=(3, 10))
             # if the connection takes more than 3s or reading the doc takes more than 10s, we timeout
-            if response and response.status_code == 200:
-                print(url)
+            if not response or response.status_code != 200:
+                return
         except requests.RequestException as e:
             print_exception(e)
             return
         beautiful_soup = BeautifulSoup(response.text, 'html.parser')
         a_tags = beautiful_soup.find_all('a', href=True)
+        self.print_lock.acquire()
+        print(url)
         for tag in a_tags:
             link = tag['href']
             if link.startswith('http') and hash(link) not in self.visited_links:
                 print('    %s' % link)
                 self.job_queue.put(link)
+        self.print_lock.release()
 
     def start(self):
         while True:

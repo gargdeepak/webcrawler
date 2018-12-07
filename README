@@ -18,4 +18,3 @@ Improvements #todo:
     a. number of results shown
     b. # of secs to show the results
     c. # of threads
-2. Bug: fix mixing of print output between the threads
